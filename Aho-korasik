@@ -1,0 +1,61 @@
+#include <iostream>
+#include<cmath>
+#include<cstdint>
+#include<map>
+#include <numeric>
+#include <vector>
+#include<set>
+
+using namespace std;
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+    map<pair<int, int>, int> mmm;
+    for (int i = 0; i < n; i++) {
+        int a, b;
+        cin >> a >> b;
+        if (a > b)swap(a, b);
+        mmm[{a, b}]++;
+    }
+    map<int, set<int>> ans;
+    for (auto [p, a] : mmm) {
+        if (a > 1) {
+            ans[p.first].insert(p.second);
+            ans[p.second].insert(p.first);
+        }
+    }
+    int last = 0;
+    pair<int, int> eee = {-1, -1};
+    for (auto [a, v] : ans) {
+        if (a - last > 1) {
+            cout << 1 << endl << a - 1 << endl;
+            return 0;
+        }
+        if (eee == pair<int, int>{-1, -1} && v.size() < m - 1) {
+            int last1 = 0;
+            v.insert(a);
+            for (int i : v) {
+                if (i - last1 > 1) {
+                    eee = {a, i - 1};
+                    break;
+                }
+                last1=i;
+            }
+        }
+        last = a;
+    }
+    if (last != m) {
+        cout << 1 << endl << m << endl;
+        return 0;
+    }
+    if (eee == pair<int, int>{-1, -1}) {
+        if (m == 2) {
+            cout << -1 << endl;
+            return 0;
+        }
+        cout << 3 << endl << 1 << " " << 2 << " " << 3 << endl;
+        return 0;
+    }
+    cout << 2 << endl << eee.first << " " << eee.second << endl;
+}
